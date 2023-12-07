@@ -1,0 +1,18 @@
+<p-dialog header="Recibo" [modal]="true" [(visible)]="modalVisible" [style]="{width: '25vw', height: '75vh'}"
+    (onHide)="onCloseModal()">
+    <span>---------------------------------------------</span>
+    <h4 class="m-0 font-bold mt-3 mb-3">
+        <i class="fa-solid fa-address-card"></i> Cliente: {{clienteSeleccionado.name}}
+    </h4>
+    <span>---------------------------------------------</span>
+    <h4 class="m-0 font-bold mt-4 "> Préstamo total: {{prestamoSeleccionado.amount}}
+    </h4>
+    <h4 class="m-0 font-bold mt-4"> Cuotas: {{prestamoSeleccionado.cuotas}}</h4>
+    <h4 class="m-0 font-bold mt-4 mb-2"> Abono: {{formatearNumeroConMoneda(abonoSeleccionado.amount)}}
+    </h4>
+    <span>---------------------------------------------</span>
+    <span>---------------------------------------------</span>
+    <h4 class="m-0 font-bold mt-4 mb-2"> Fecha de abono: {{abonoSeleccionado.date | date: 'dd/MM/yyyy'}}
+    </h4>
+    <span>---------------------------------------------</span>
+</p-dialog>

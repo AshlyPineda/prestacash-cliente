@@ -1,0 +1,114 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <div class="mb-3 flex justify-content-between align-items-center mb-5">
+                <p-button label="Regresar" icon="fa fa-circle-left" (click)="irCliente(prestamo)"></p-button>
+                <h2 class="m-0 text-blue-600 font-bold ">
+                    <i class="fa-solid fa-circle-user"></i> Cliente: {{cliente.name}}
+                </h2>
+                <button pButton pRipple label="Agregar" icon="fa fa-plus" class="p-button-success mr-2"
+                    (click)="openNew()"></button>
+            </div>
+
+
+            <p-table #dt [value]="prestamos" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','country.name','representative.name','lastname']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Paginación"
+                selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="amount">Monto<p-sortIcon field="amount"></p-sortIcon></th>
+                        <th pSortableColumn="date">Fecha</th>
+                        <th pSortableColumn="interest">Interes</th>
+                        <th pSortableColumn="cuotas"># Cuotas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-prestamo>
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Monto</span>
+                            {{prestamo.amount}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Fecha</span>
+                            {{dateFormatter(prestamo.date)}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Interes</span>
+                            {{prestamo.interest}}%
+                        </td>
+                        <td>
+                            <span class="p-column-title">Cuotas</span>
+                            {{prestamo.cuotas}}
+                        </td>
+                        <td>
+                            <div class="flex gap-2">
+                                <button pButton pRipple icon="fa fa-trash" class="p-button-rounded p-button-warning"
+                                    (click)="deletePrestamo(prestamo)"></button>
+                                <button pButton (click)="seleccionarPrestamo(prestamo)" pRipple icon="fa fa-sack-dollar"
+                                    class="p-button-rounded p-button-success"></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <p-dialog [(visible)]="deletePrestamoDialog" header="Confirm" [modal]="true"
+                        [style]="{width:'400px'}">
+                        <div class="flex align-items-center justify-content-center">
+                            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                            <span *ngIf="prestamo">¿Estás seguro de que quieres borrar?</span>
+                        </div>
+                        <ng-template pTemplate="footer">
+                            <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                                (click)="deletePrestamoDialog = false"></button>
+                            <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                                (click)="confirmDelete()"></button>
+                        </ng-template>
+                    </p-dialog>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="prestamoDialog" [style]="{width: '450px'}" header="Agregar Préstamo" [modal]="true"
+    class="p-fluid" (closed)="hideDialog()">
+    <ng-template pTemplate="content">
+        <div class="flex flex-column gap-2">
+            <div class="field">
+                <label for="amount">Monto</label>
+                <input type="number" pInputText id="amount" [(ngModel)]="prestamo.amount" required autofocus
+                    [ngClass]="{'ng-invalid ng-dirty' : submitted && !prestamo.amount}" />
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !prestamo.amount">Amount is required.</small>
+            </div>
+            <div class="field">
+                <label for="date">Fecha</label>
+                <input type="date" pInputText id="date" [(ngModel)]="prestamo.date" required autofocus
+                    [ngClass]="{'ng-invalid ng-dirty' : submitted && !prestamo.date}" />
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !prestamo.date">Date is required.</small>
+            </div>
+            <div class="field">
+                <label for="interest">Interes</label>
+                <input type="number" pInputText id="interest" [(ngModel)]="prestamo.interest" required autofocus
+                    [ngClass]="{'ng-invalid ng-dirty' : submitted && !prestamo.interest}" />
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !prestamo.interest">Interest is required.</small>
+            </div>
+            <div class="field">
+                <label for="cuotas">Cuotas</label>
+                <input type="number" pInputText id="cuotas" [(ngModel)]="prestamo.cuotas" required autofocus
+                    [ngClass]="{'ng-invalid ng-dirty' : submitted && !prestamo.cuotas}" />
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !prestamo.cuotas">Cuotas is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="fa fa-times" class="p-button-text"
+            (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="fa fa-check" class="p-button-text" (click)="saveLoan()"></button>
+    </ng-template>
+</p-dialog>
+
+<app-abonos [modalVisible]="abonosModalVisible" (modalVisibleChange)="abonosModalVisibleChange($event)"
+    [prestamoSeleccionado]="prestamoSeleccionado" [clienteSeleccionado]="cliente"
+    *ngIf="prestamoSeleccionado !== null" />
